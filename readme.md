@@ -9,7 +9,7 @@ tquant）交易通道**，并通过 **HTTP API + MCP**
 
 ## 架构一览
 
-![架构流程图.png](pic%2F%E6%9E%B6%E6%9E%84%E6%B5%81%E7%A8%8B%E5%9B%BE.png)
+https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/%E6%9E%B6%E6%9E%84%E6%B5%81%E7%A8%8B%E5%9B%BE.png
 
 
 - **miniQMT**：券商提供的极简 QMT 终端 + `userdata_mini` 数据目录；Python 侧通过 **xtquant** 连接。

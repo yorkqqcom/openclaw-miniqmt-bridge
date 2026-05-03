@@ -19,10 +19,6 @@ tquant）交易通道**，并通过 **HTTP API + MCP**
 ---
 ## 示例
 ![](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/openclaw%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.jpeg)
-![](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/openclaw%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.jpeg)
-![](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9F%A5%E8%AF%A2UI-%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.png)
-![](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9F%A5%E8%AF%A2UI-%E8%B5%84%E9%87%91%E6%9F%A5%E8%AF%A2.png)
-
 
 ## 一、部署与登录 miniQMT（对接中间件前必做）
 

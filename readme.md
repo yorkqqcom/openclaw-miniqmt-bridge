@@ -18,10 +18,10 @@ tquant）交易通道**，并通过 **HTTP API + MCP**
 
 ---
 ## 示例
-![openclaw持仓查询.jpeg](pic%2Fopenclaw%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.jpeg)
-![openClaw查询历史交易明细.png](pic%2FopenClaw%E6%9F%A5%E8%AF%A2%E5%8E%86%E5%8F%B2%E4%BA%A4%E6%98%93%E6%98%8E%E7%BB%86.png
-![中间件查询UI-持仓查询.png](pic%2F%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9F%A5%E8%AF%A2UI-%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.png)
-![中间件查询UI-资金查询.png](pic%2F%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9F%A5%E8%AF%A2UI-%E8%B5%84%E9%87%91%E6%9F%A5%E8%AF%A2.png)
+![](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/openclaw%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.jpeg)
+![](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/openclaw%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.jpeg)
+![](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9F%A5%E8%AF%A2UI-%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.png)
+![](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/blob/main/pic/%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9F%A5%E8%AF%A2UI-%E8%B5%84%E9%87%91%E6%9F%A5%E8%AF%A2.png)
 
 
 ## 一、部署与登录 miniQMT（对接中间件前必做）

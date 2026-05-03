@@ -1,44 +1,32 @@
 # openclaw-miniqmt-bridge（xtqmt 交易中间件发布包）
 
-本仓库用于在 **Windows** 上落地 **miniQMT（xtquant）交易通道**，并通过 **HTTP API + MCP** 把账户、订单、持仓等能力暴露给 **OpenClaw**、**Cursor**（含 **Hermes-agent** MCP）等支持 MCP 的客户端。  
+本仓库用于在 **Windows** 上落地 **miniQMT（x
+tquant）交易通道**，并通过 **HTTP API + MCP** 
+把账户、订单、持仓等能力暴露给 **OpenClaw**、**Cursor**（含 **Hermes-agent** MCP）等支持 MCP 的客户端。  
 随仓库提供的 `run_api.dist`、`run_mcp.dist` 为经打包的运行目录（与 **xtqmt-trading-system** 发布形态一致）；可执行文件名以你实际构建为准，下文以常见名 **`xtqmt_api.exe` / `xtqmt_mcp.exe` / `xtqmt_live.exe` / `xtqmt_runtime.exe`** 为例。
 
 ---
 
 ## 架构一览
 
-```mermaid
-flowchart LR
-  subgraph clients [AI 客户端]
-    OC[OpenClaw Gateway]
-    CU[Cursor / Hermes-agent]
-  end
-  subgraph bridge [本中间件]
-    MCP[xtqmt_mcp]
-    API[xtqmt_api]
-    LIVE[xtqmt_live]
-  end
-  subgraph broker [券商侧]
-    QMT[miniQMT / QMT 终端]
-    XT[xtquant]
-  end
-  CU --> MCP
-  OC --> MCP
-  MCP --> API
-  LIVE --> API
-  API --> XT
-  XT --> QMT
-```
+![架构流程图.png](pic%2F%E6%9E%B6%E6%9E%84%E6%B5%81%E7%A8%8B%E5%9B%BE.png)
+
 
 - **miniQMT**：券商提供的极简 QMT 终端 + `userdata_mini` 数据目录；Python 侧通过 **xtquant** 连接。
 - **中间件**：在 xtquant 之上提供 OMS、风控、对账、观测与 **HTTP API**；**MCP 进程**负责把 API 封装成模型可调用的工具。
 - **OpenClaw / Cursor（含 Hermes-agent）**：作为 **MCP Client**，通过 `stdio` 或 **HTTP（SSE / streamable-http）** 连接 `xtqmt_mcp`（或上游提供的等价 MCP 地址）。
 
 ---
+## 示例
+![openclaw持仓查询.jpeg](pic%2Fopenclaw%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.jpeg)
+![openClaw查询历史交易明细.png](pic%2FopenClaw%E6%9F%A5%E8%AF%A2%E5%8E%86%E5%8F%B2%E4%BA%A4%E6%98%93%E6%98%8E%E7%BB%86.png
+![中间件查询UI-持仓查询.png](pic%2F%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9F%A5%E8%AF%A2UI-%E6%8C%81%E4%BB%93%E6%9F%A5%E8%AF%A2.png)
+![中间件查询UI-资金查询.png](pic%2F%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%9F%A5%E8%AF%A2UI-%E8%B5%84%E9%87%91%E6%9F%A5%E8%AF%A2.png)
+
 
 ## 一、部署与登录 miniQMT（对接中间件前必做）
 
-以下步骤与券商版本有关，以你方 **国金 / 华泰 / 其他支持 miniQMT 的 QMT** 官方说明为准；中间件侧只要求：**本机能 import xtquant，且 mini 用户目录路径正确**。
+以下步骤与券商版本有关，以你方 **支持 miniQMT 的 QMT** 官方说明为准；中间件侧只要求：**本机能 import xtquant，且 mini 用户目录路径正确**。
 
 1. **安装 QMT 客户端**  
    从券商官网安装完整交易端，确保带 **miniQMT（极简模式）** 或独立 mini 入口。

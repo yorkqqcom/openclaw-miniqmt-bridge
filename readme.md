@@ -1,9 +1,15 @@
 # openclaw-miniqmt-bridge（xtqmt 交易中间件发布包）
 
-本仓库用于在 **Windows** 上落地 **miniQMT（x
-tquant）交易通道**，并通过 **HTTP API + MCP** 
-把账户、订单、持仓等能力暴露给 **OpenClaw**、**Cursor**（含 **Hermes-agent** MCP）等支持 MCP 的客户端。  
-随仓库提供的 `run_api.dist`、`run_mcp.dist` 为经打包的运行目录（与 **xtqmt-trading-system** 发布形态一致）；可执行文件名以你实际构建为准，下文以常见名 **`xtqmt_api.exe` / `xtqmt_mcp.exe` / `xtqmt_live.exe` / `xtqmt_runtime.exe`** 为例。
+本仓库是一套面向 **国内券商 miniQMT / xtquant（常见 QMT 交易通道）** 的 **实盘执行与运营中间件**，而不是「内置黑箱策略」或替代券商终端的炒股软件。它把 **策略决策**（你想买卖什么、目标仓位是什么）与 **下单、回报、对账、风控** 分层：策略侧只产出受约束的 **`OrderIntent` / `TargetPosition`**，由中间层完成 **OMS、幂等、事前风控、事件驱动状态机与可观测性**，便于你在单机或小型部署上 **稳定交付、复盘与扩展**。
+
+**适合谁**：个人或小团队量化开发者；需要 **统一装机与账户档案** 的培训 / 集成方；希望在 **Cursor 等支持 MCP 的环境**里，在明确权限边界下做查询、核对与限价类操作的工程师。
+
+**对外提供的主要形态**（可按需组合）：
+
+- **Runtime（`run_live` ）**：常驻跑策略与快照循环；生产环境策略正文以 **SQLite（`APP_DB_URL`）** 中活动配置为准。
+- **HTTP API + 零构建管理 UI**：资金、持仓、委托、成交、历史、策略看板与快捷交易等；券商口令经 API **内存连接**，**不入库**。
+- **MCP 服务**：把受 Token / `TRADING_ENABLED` / 风控约束的能力暴露给 Agent，与自有或示例技能包联调。
+- **本地 SQLite 持久化**：在轻量通道往往缺少完整「远程历史 API」的前提下，用快照与补数脚本形成 **可查询的跨日账本**。
 
 ---
 

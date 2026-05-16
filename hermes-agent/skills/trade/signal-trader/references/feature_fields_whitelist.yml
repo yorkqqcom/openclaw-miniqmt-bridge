@@ -1,0 +1,19 @@
+# 特征字段白名单 — get_features_snapshot 消费边界
+# 远端 feature_data 迭代时：数据团队与本仓库同步更新；Skill 仅展示/推理下列字段。
+# schema_version 递增表示本文件语义变更（非远端表结构）。
+schema_version: 1
+last_updated: "2026-05-16"
+summary: "初始占位；按部署环境从真实 MCP 响应中收敛字段列表"
+
+# 每项：field 为响应 JSON 中的键名（或嵌套路径用点号，若实现支持）
+fields:
+  - field: "ts_code"
+    label_zh: "证券代码"
+    description: "标的标识"
+    stable: true
+  - field: "trade_date"
+    label_zh: "交易日期"
+    description: "特征对应交易日"
+    stable: true
+
+# 说明：trend_direction_5/10、support_price 等若多为「?」则暂不列入白名单；待数据质量稳定后再加入并列 stable 标记。

@@ -30,9 +30,7 @@
 
 Invoke-WebRequest -Uri "https://github.com/yorkqqcom/openclaw-miniqmt-bridge/releases/download/openclaw-miniqmt-bridge/install.ps1" -OutFile ".\\install.ps1" -UseBasicParsing
 
-```
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ".\\install.ps1" -DownloadBaseUrl "https://github.com/yorkqqcom/openclaw-miniqmt-bridge/releases/download/openclaw-miniqmt-bridge/" -BundleFileName "openclaw-miniqmt-bridge-0.1.1-wheels.zip" -ExpectedSha256 "0d15cc5dd7f976091db1a19316680be659feb82e60447382d77733751376e13b"
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\\install.ps1" -DownloadBaseUrl "https://github.com/yorkqqcom/openclaw-miniqmt-bridge/releases/download/openclaw-miniqmt-bridge/" -BundleFileName "openclaw-miniqmt-bridge-0.1.0-wheels.zip" -ExpectedSha256 "c9b32af77cb9e463cd87749c0b2e17c236178637777f8c44e669abf0bc867bf7"
 
 ```
 

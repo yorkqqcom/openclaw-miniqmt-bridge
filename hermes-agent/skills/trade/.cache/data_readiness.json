@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-05-16T00:44:52.813570+00:00",
+  "stale_after": "2026-05-16T00:59:52.813570+00:00",
+  "cache_ttl_seconds": 900,
+  "mcp_endpoint_configured": false,
+  "note": "stub-only: set HERMES_DATA_MCP_URL to run live probes",
+  "probes": [
+    {
+      "tool": "health_check",
+      "status": "not_configured",
+      "checked_at": "2026-05-16T00:44:52.813570+00:00",
+      "detail": "HERMES_DATA_MCP_URL unset or --stub-only"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "可选：晨间流水线写入、收盘只读。字段可演进；closing-review 仅依赖此处列出的键。authoring_meta: last_updated=2026-05-13 summary=可追溯变更摘要（JSON 无 HTML 顶栏，用本字段）。",
+  "run_date": "2026-05-12",
+  "windows": {
+    "fund_share_08:00": { "completed": true, "artifact": "wechat_snippet_or_path" },
+    "preflight_09:00": { "completed": true, "candidate_count": 12 },
+    "auction_09:27": { "completed": true, "canceled_symbols": ["002800.SZ"] }
+  },
+  "signal_source": "get_prediction_results",
+  "notes": "自由文本，供收盘决策日志引用"
+}

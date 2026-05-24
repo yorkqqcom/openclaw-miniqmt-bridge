@@ -2,13 +2,17 @@
 
 面向 **miniQMT / xtquant** 的实盘执行与运营中间件：策略只负责「想什么」，下单编排、风控、对账与可观测由中间层完成。
 
-**边界**：本软件不提供投资建议、不承诺收益、不替代券商交易终端与交易所规则。对外宣传口径见 [docs/marketing_positioning.md](docs/marketing_positioning.md)。
+**Agent 接入**：安装并启动 **MCP 服务**（`Run-MCP.cmd`）后，**OpenClaw**、**Hermes-Agent** 及 Cursor 等 MCP 客户端可**直接调用**本系统——查询**账户资金/资产**、**持仓**，以及受控的**限价下单、撤单**（须 `TRADING_ENABLED=true` 且账户已在管理台 **connect**）。
+
+**边界**：本软件不提供投资建议、不承诺收益、不替代券商交易终端与交易所规则。
 
 ---
 
 ## 这是什么
 
 本系统把 **策略决策** 与 **实盘执行** 分层：策略侧产出 **`OrderIntent` / `TargetPosition`**，中间层负责 OMS、幂等、事前风控、事件驱动状态机与本地账本。适合个人或小团队量化开发者，以及需要在 **Windows 单机** 上稳定交付、复盘与扩展的场景。
+
+除管理台与 REST API 外，本桥还是 **OpenClaw / Hermes-Agent 的实盘执行后端**：Agent 通过 MCP 工具链读写同一套账户与订单状态，无需在 Agent 侧集成 miniQMT SDK。
 
 ---
 
@@ -33,10 +37,21 @@
 - 简易模式维护盯盘规则，无需手写 YAML
 - 策略实例状态与最近事件可在「策略看板」查看
 
-### MCP（可选）
+### OpenClaw / Hermes-Agent 接入
 
-- 供 Cursor 等支持 MCP 的客户端在 **Token**、**`TRADING_ENABLED`** 与风控约束下查询账户、行情与限价操作
-- 须先启动 API 并在管理台完成账户 **connect**
+本系统内置 **MCP 服务**（安装根 **`Run-MCP.cmd`**），将 HTTP API 封装为标准 MCP 工具，供 **OpenClaw**、**Hermes-Agent**、Cursor 等客户端**直接调用**：
+
+| 能力 | 说明 |
+|------|------|
+| **查询账户资产** | 资金余额、可用资金、总资产等（如 `get_account_assets`） |
+| **查询持仓** | 当前持仓列表与数量（如 `get_positions`） |
+| **查询委托/成交** | 当日与历史委托、成交、权益曲线等 |
+| **直接下单** | 限价买卖、批量下单、撤单（如 `place_limit_order`、`place_limit_order_batch`） |
+| **行情辅助** | 实时行情、代码联想等 |
+
+**典型联调顺序**：`Run-API.cmd` → 管理台 **connect** 账户 → `Run-MCP.cmd` → 在 OpenClaw / Hermes-Agent 中配置 MCP 地址与 `MCP_API_TOKEN`（与 `API_TOKEN` 一致）。
+
+**安全约束**：写操作受 **`TRADING_ENABLED`**、**`API_TOKEN`** 与事前风控（如单笔金额上限）约束；联调建议先设 `TRADING_ENABLED=false` 验证查询与拒单路径。Hermes 交易技能包（信号交易、买卖单、持仓查询等）见 [`hermes-agent/skills/trade/`](hermes-agent/skills/trade/)；工具清单与配置见 [`hermes-agent/skills/trade/references/mcp_runbook.md`](hermes-agent/skills/trade/references/mcp_runbook.md)。
 
 ---
 
@@ -136,7 +151,8 @@ $u='https://github.com/yorkqqcom/openclaw-miniqmt-bridge/releases/download/openc
    - 窗口 1：`.\Run-API.cmd`（默认 `http://127.0.0.1:8000`）
    - 窗口 2：`.\Run-UI.cmd`（默认 `http://127.0.0.1:8080`）
 4. **管理台**：登录 →「证券账户管理」保存档案 → **连接** 目标账户。
-5. **确认无误后**：将 `.env` 中 `TRADING_ENABLED` 改为 `true` 方可实盘下单；网卡许可见 `.env.example` 与 `NIC_LICENSE_REQUIRED`（开发联调可设 `NIC_LICENSE_REQUIRED=false`）。
+5. **（可选）Agent 接入**：`.\Run-MCP.cmd`，在 OpenClaw / Hermes-Agent 中指向 MCP 服务；即可**查询资产与持仓**、在 `TRADING_ENABLED=true` 时**直接下单**。
+6. **确认无误后**：将 `.env` 中 `TRADING_ENABLED` 改为 `true` 方可实盘下单；网卡许可见 `.env.example` 与 `NIC_LICENSE_REQUIRED`（开发联调可设 `NIC_LICENSE_REQUIRED=false`）。
 
 ### 安装根启动器
 
@@ -165,4 +181,6 @@ $u='https://github.com/yorkqqcom/openclaw-miniqmt-bridge/releases/download/openc
 
 - [release-readme.md](release-readme.md) — 发布包详细说明
 - [docs/install_curl.md](docs/install_curl.md) — 安装参数与安全说明
+- [hermes-agent/skills/trade/references/mcp_runbook.md](hermes-agent/skills/trade/references/mcp_runbook.md) — MCP 工具与 OpenClaw / Hermes-Agent 联调
+- [hermes-agent/skills/trade/](hermes-agent/skills/trade/) — Hermes 交易技能包（查询、下单、信号交易等）
 - [docs/marketing_positioning.md](docs/marketing_positioning.md) — 对外定位与宣传边界

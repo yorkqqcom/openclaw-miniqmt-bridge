@@ -1,6 +1,6 @@
 <!--
 last_updated: 2026-05-24
-summary: 新增 XtQuantTrader 进程级陷阱：长期运行 crash、BSON 大小限制、线程池耗尽；新增 NaN/Inf JSON 序列化 crash。
+summary: 新增 XtQuantTrader 进程级陷阱：长期运行 crash、BSON 大小限制；新增 NaN/Inf JSON 序列化 crash。
 -->
 
 # QMT 与数据侧常见陷阱（症状 → 影响 → 正确做法）
@@ -33,8 +33,7 @@ summary: 新增 XtQuantTrader 进程级陷阱：长期运行 crash、BSON 大小
 | 症状 | 影响 | 正确做法 | 出处 |
 |------|------|----------|------|
 | XtMiniQmt 连续运行 2+ 天后，Bridge 重连时进程静默消失（无异常、无日志） | XtQuantTrader.start() 在 C++ 层调用 ExitProcess()，MCP 服务整体宕机 | **定期重启 XtMiniQmt 终端**（建议每 24 小时）；状态积累是根因，重启即恢复 | 生产运行复盘 |
-| get_market_data_ex() 或 get_financial_data() 请求量稍大时，Granian/Uvicorn worker 进程直接崩溃（exit code 1，无 Python 异常） | QMT SDK 内部 BSON 文档超过 1 MB 时触发 C++ 断言（bsonobj.cpp assert u < 1000000），杀死宿主进程 | **分块调用**：K-line 按 `max(1, 3000 // bar_count)` 个 symbol/批；财务数据固定 100 symbols/批 | 生产运行复盘 |
-| 多个并发 API 请求到达时，整个 Bridge 无响应（线程池饱和） | XtQuantTrader.start()/connect() 在线程池线程中无限期阻塞，耗尽所有 worker 线程 | **在 daemon thread 中运行 connect**，与请求线程池隔离；首次业务请求到达时再 _ensure_connected() | 生产运行复盘 |
-| QMT 对停牌股或缺失字段返回 numpy NaN，API 响应变成 500 Internal Server Error | json.dumps(float('nan')) 抛 ValueError，Granian worker crash | **所有 QMT 数值转换时使用 _safe_float()**：检查 math.isnan() / math.isinf() → 返回 None（序列化为 JSON null） | 生产运行复盘 |
+| get_market_data_ex() 或 get_financial_data() 请求量稍大时，worker 进程直接崩溃（exit code 1，无 Python 异常） | QMT SDK 内部 BSON 文档超过 1 MB 时触发 C++ 断言（bsonobj.cpp assert u < 1000000），杀死宿主进程 | **分块调用**：K-line 按 `max(1, 3000 // bar_count)` 个 symbol/批；财务数据固定 100 symbols/批 | 生产运行复盘 |
+| QMT 对停牌股或缺失字段返回 numpy NaN，API 响应变成 500 Internal Server Error | json.dumps(float('nan')) 抛 ValueError，worker crash | **所有 QMT 数值转换时使用 _safe_float()**：检查 math.isnan() / math.isinf() → 返回 None（序列化为 JSON null） | 生产运行复盘 |
 
 <!-- version: 1.3 last_updated: 2026-05-24 -->

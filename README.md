@@ -1,10 +1,20 @@
-# openclaw-miniqmt-bridge · v0.1.3
+# openclaw-miniqmt-bridge · v0.1.4
 
 面向 **miniQMT / xtquant** 的实盘执行与运营中间件：策略只负责「想什么」，下单编排、风控、对账与可观测由中间层完成。
 
 **Agent 接入**：安装并启动 **MCP 服务**（`Run-MCP.cmd`）后，**OpenClaw**、**Hermes-Agent** 及 Cursor 等 MCP 客户端可**直接调用**本系统——查询**账户资金/资产**、**持仓**，以及受控的**限价下单、撤单**（须 `TRADING_ENABLED=true` 且账户已在管理台 **connect**）。
 
-**边界**：本软件不提供投资建议、不承诺收益、不替代券商交易终端与交易所规则。
+**边界**：本软件不提供投资建议、不承诺收益、不替代券商交易终端与交易所规则。对外宣传口径见 [docs/marketing_positioning.md](docs/marketing_positioning.md)。
+
+### v0.1.4 更新要点
+
+- **量化 Cockpit（默认首页）**：股池内 TOP N 概念/个股排行、PnL KPI、交易侧栏（K 线、五档、快捷下单）与底部持仓/委托/成交/事件；WebSocket 行情推送，断线自动降级 HTTP 轮询。
+- **pytdx 只读行情**：与 QMT 交易通道独立；Release 离线包默认安装 **`trade,agent,marketdata`**（含 pytdx），管理台「行情连接」页可粘贴券商 `connect.cfg` 测节点。
+- **经典视图保留**：证券账户、策略中心、历史查询等原有 Tab 经 Cockpit 顶栏「经典视图」或 `/index-legacy.html` 进入。
+- **策略中心**：修复「重置提醒冷却」接口（管理台 POST 与 API 对齐）。
+- **Agent 生态**：Hermes-Agent 交易 Skill（信号交易、盯盘、多账户）与 Hermes-Coach 投资教练（策略书、大师课）见 [新用户入门](docs/hermes_agent_coach_getting_started.md)。
+
+安装与部署细节见 [release-readme.md](release-readme.md)。
 
 ---
 
@@ -26,8 +36,10 @@
 
 ### HTTP API + 管理台
 
+- **量化 Cockpit**（默认首页）：股池排行、概念/个股榜、PnL 概览、交易侧栏与 WebSocket 行情
+- **pytdx 只读行情**：独立行情通道；股池导入/导出、通达信 `connect.cfg` 节点测试（与 QMT 下单通道分离）
 - 资金、持仓、当日委托/成交、历史查询与 CSV 导出
-- 证券账户档案、策略配置、策略看板
+- 证券账户档案、策略配置、策略看板（经典视图 Tab）
 - 网关 MCP 管理（`http://127.0.0.1:8080/admin/`）
 - 券商口令经 API **内存连接**，**不入库**
 
@@ -51,13 +63,19 @@
 
 **典型联调顺序**：`Run-API.cmd` → 管理台 **connect** 账户 → `Run-MCP.cmd` → 在 OpenClaw / Hermes-Agent 中配置 MCP 地址与 `MCP_API_TOKEN`（与 `API_TOKEN` 一致）。
 
-**安全约束**：写操作受 **`TRADING_ENABLED`**、**`API_TOKEN`** 与事前风控（如单笔金额上限）约束；联调建议先设 `TRADING_ENABLED=false` 验证查询与拒单路径。Hermes 交易技能包（信号交易、买卖单、持仓查询等）见 [`hermes-agent/skills/trade/`](hermes-agent/skills/trade/)；工具清单与配置见 [`hermes-agent/skills/trade/references/mcp_runbook.md`](hermes-agent/skills/trade/references/mcp_runbook.md)。
+**安全约束**：写操作受 **`TRADING_ENABLED`**、**`API_TOKEN`** 与事前风控（如单笔金额上限）约束；联调建议先设 `TRADING_ENABLED=false` 验证查询与拒单路径。Hermes 交易技能包（信号交易、买卖单、持仓查询等）见 [`hermes-agent/skills/trade/`](hermes-agent/skills/trade/)；**对话怎么说**见 [`docs/hermes_dialogue_foolproof.md`](docs/hermes_dialogue_foolproof.md)（**Hermes Agent 微信端**）；**新用户入门**见 [`docs/hermes_agent_coach_getting_started.md`](docs/hermes_agent_coach_getting_started.md)；工具清单与配置见 [`hermes-agent/skills/trade/references/mcp_runbook.md`](hermes-agent/skills/trade/references/mcp_runbook.md)。
 
 ---
 
 ## 管理台预览
 
-按典型使用顺序：
+默认进入 **量化 Cockpit**（股池排行 + 交易侧栏）；证券账户、策略中心等维护功能经顶栏 **「经典视图」** 进入。按典型使用顺序：
+
+### 量化 Cockpit 看板
+
+登录并连接账户后，默认首页为 **量化 Cockpit**：股池内概念/个股排行、PnL KPI、交易侧栏与底部持仓/委托/成交/事件。
+
+![量化 Cockpit 看板](pic/board.png)
 
 ### 1. 登录
 
@@ -105,17 +123,17 @@
 |----|------|
 | Release 页 | [openclaw-miniqmt-bridge](https://github.com/yorkqqcom/openclaw-miniqmt-bridge/releases/tag/openclaw-miniqmt-bridge) |
 | 下载基址 | `https://github.com/yorkqqcom/openclaw-miniqmt-bridge/releases/download/openclaw-miniqmt-bridge/` |
-| 主要资产 | `openclaw-miniqmt-bridge-0.1.3-wheels.zip`、`install.ps1`、`SHA256SUMS`；可选 `remote_install_bootstrap.ps1` |
+| 主要资产 | `openclaw-miniqmt-bridge-0.1.4-wheels.zip`、`install.ps1`、`SHA256SUMS`；可选 `remote_install_bootstrap.ps1` |
 
 **前置条件**：Windows 10/11（x64）、Python 3.10+ 在 PATH 中、已安装并启动 **MiniQMT / QMT** 终端。
 
 ### 方式 A — 推荐（安全主路径）
 
-1. 从 Release 下载 `install.ps1`、`openclaw-miniqmt-bridge-0.1.3-wheels.zip`、`SHA256SUMS`。
+1. 从 Release 下载 `install.ps1`、`openclaw-miniqmt-bridge-0.1.4-wheels.zip`、`SHA256SUMS`。
 2. 校验 zip 的 SHA-256（与 `SHA256SUMS` 中对应行一致）：
 
    ```powershell
-   Get-FileHash -Algorithm SHA256 .\openclaw-miniqmt-bridge-0.1.3-wheels.zip
+   Get-FileHash -Algorithm SHA256 .\openclaw-miniqmt-bridge-0.1.4-wheels.zip
    ```
 
 3. 在同一目录执行（将 `ExpectedSha256` 换成 `SHA256SUMS` 中的 64 位小写 hex）：
@@ -123,8 +141,8 @@
    ```powershell
    powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 `
      -DownloadBaseUrl "https://github.com/yorkqqcom/openclaw-miniqmt-bridge/releases/download/openclaw-miniqmt-bridge/" `
-     -BundleFileName "openclaw-miniqmt-bridge-0.1.3-wheels.zip" `
-     -ExpectedSha256 "4a8f4ce858cbee19086cca69e18adaab0fcdf5b49833095fd90c7b7c310cb1d4"
+     -BundleFileName "openclaw-miniqmt-bridge-0.1.4-wheels.zip" `
+     -ExpectedSha256 "0c66779fb875d37d7aea2c6a3592246a3768453b1d3e308ac3f588e278ecf22e"
    ```
 
 默认在安装目录创建 `openclaw-install`（或事先设置 `$env:OPENCLAW_INSTALL_ROOT` 指定路径）。更多参数见 [docs/install_curl.md](docs/install_curl.md)。

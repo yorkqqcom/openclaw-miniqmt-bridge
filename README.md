@@ -1,5 +1,7 @@
 # openclaw-miniqmt-bridge · v0.1.4
 
+[知乎专栏](https://www.zhihu.com/column/c_2051647988053943380) — 产品介绍、使用教程与更新说明
+
 面向 **miniQMT / xtquant** 的实盘执行与运营中间件：策略只负责「想什么」，下单编排、风控、对账与可观测由中间层完成。
 
 **Agent 接入**：安装并启动 **MCP 服务**（`Run-MCP.cmd`）后，**OpenClaw**、**Hermes-Agent** 及 Cursor 等 MCP 客户端可**直接调用**本系统——查询**账户资金/资产**、**持仓**，以及受控的**限价下单、撤单**（须 `TRADING_ENABLED=true` 且账户已在管理台 **connect**）。
